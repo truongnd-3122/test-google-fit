@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BaseEditText">
+        <attr name="android:hint" />
+        <attr name="android:text" />
+        <attr name="android:inputType" />
+        <attr name="android:textSize"/>
+        <attr name="android:padding"/>
+        <attr name="android:paddingLeft"/>
+        <attr name="android:paddingRight"/>
+        <attr name="android:paddingTop"/>
+        <attr name="android:paddingBottom"/>
+        <attr name="android:gravity"/>
+        <attr name="android:maxLength"/>
+<!--        <attr name="colorUnFocus" format="reference"/>-->
+<!--        <attr name="colorFocus" format="reference"/>-->
+        <attr name="background" format="reference"/>
+
+    </declare-styleable>
+</resources>

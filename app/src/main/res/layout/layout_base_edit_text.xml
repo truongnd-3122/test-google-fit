@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewEt"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_56sdp"
+        android:background="@drawable/bg_corner_radius_edit_text"
+        android:padding="@dimen/_10sdp">
+        <EditText
+            android:id="@+id/et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_15sdp"
+            android:background="@null"
+            android:hint="メールアドレス"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:maxLines="1"
+            app:layout_constraintEnd_toStartOf="@id/ivClearEmail"/>
+
+        <ImageView
+            android:id="@+id/ivClearEmail"
+            android:layout_width="@dimen/_18sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:src="@drawable/ic_close"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
