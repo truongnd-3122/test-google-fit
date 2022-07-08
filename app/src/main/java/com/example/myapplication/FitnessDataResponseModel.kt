@@ -1,7 +1,7 @@
 package com.example.myapplication
 
 data class FitnessDataResponseModel(
-    var steps: Float? = 0f,
+    var steps: Int? = 0,
     var calories: Float? = 0f,
     var distance: Float? = 0f,
     var heartRate: Int? = 0,
