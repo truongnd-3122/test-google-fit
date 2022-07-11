@@ -3,10 +3,11 @@ package com.example.myapplication
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,20 +15,20 @@ import androidx.databinding.DataBindingUtil
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.HistoryApi
-import com.google.android.gms.fitness.data.DataSet
-import com.google.android.gms.fitness.data.DataType
-import com.google.android.gms.fitness.data.Field
+import com.google.android.gms.fitness.data.*
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import java.text.DateFormat
 import java.text.DecimalFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.regex.Pattern
 
 
 //469986176513-dc3c9u04gbfbk0ic6bp45s4f872mf45m.apps.googleusercontent.com
@@ -43,16 +44,20 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Any?>, OnFailureList
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         fitnessDataResponseModel = FitnessDataResponseModel()
 
-        checkPermission()
 
         binding.btn.setOnClickListener {
-            requestForHistory()
+            checkPermission()
+        }
+
+        binding.btn1.setOnClickListener {
+            writeBodyTemperature()
         }
 
 
@@ -82,12 +87,16 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Any?>, OnFailureList
             .addDataType(DataType.AGGREGATE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-//            .addDataType(DataType.TYPE_HEART_RATE_BPM, FitnessOptions.ACCESS_READ)
-//            .addDataType(DataType.AGGREGATE_HEART_RATE_SUMMARY, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.TYPE_HEART_RATE_BPM, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_HEART_RATE_SUMMARY, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.TYPE_HEIGHT, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.AGGREGATE_HEIGHT_SUMMARY, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.TYPE_WEIGHT, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.AGGREGATE_WEIGHT_SUMMARY, FitnessOptions.ACCESS_READ)
+            .addDataType(HealthDataTypes.TYPE_BLOOD_PRESSURE, FitnessOptions.ACCESS_READ)
+            .addDataType(HealthDataTypes.AGGREGATE_BLOOD_PRESSURE_SUMMARY, FitnessOptions.ACCESS_READ)
+            .addDataType(HealthDataTypes.TYPE_BODY_TEMPERATURE, FitnessOptions.ACCESS_READ)
+            .addDataType(HealthDataTypes.TYPE_BODY_TEMPERATURE, FitnessOptions.ACCESS_WRITE)
             .build()
 
         val account: GoogleSignInAccount = getGoogleAccount()
@@ -100,7 +109,7 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Any?>, OnFailureList
                 fitnessOptions
             )
         } else {
-            Log.d("zzz", "start reading")
+            requestForHistory()
         }
     }
 
@@ -126,6 +135,7 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Any?>, OnFailureList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
+            requestForHistory()
             Log.d("zzz", "onActivityResult")
         }
     }
@@ -143,57 +153,19 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Any?>, OnFailureList
         val startTime = cal.timeInMillis
 
         getCaloriesAndDistance(startTime, endTime)
-//
+
         getDailySteps()
 
-        getHeightAndWeight(startTime, endTime)
+        getHeightWeightAndHeartRate(endTime)
 
+        getBloodPressure(startTime, endTime)
 
-    }
-
-    private fun getHeightAndWeight(startTime: Long, endTime: Long) {
-        val readRequestBody: DataReadRequest = DataReadRequest.Builder()
-            .read(DataType.TYPE_HEIGHT)
-//            .read(DataType.TYPE_WEIGHT)
-            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-            .setLimit(1)
-            .build()
-
-
-        Fitness.getHistoryClient(this@MainActivity, getGoogleAccount())
-            .readData(readRequestBody)
-            .addOnSuccessListener { response ->
-//                onSuccess(response)
-                if (response is DataReadResponse) {
-                    if (response.buckets != null && response.buckets.isNotEmpty()) {
-                        Log.d("qqq", "if")
-                        for (bucket in response.buckets) {
-//                            val caloriesDataSet = bucket.getDataSet(DataType.TYPE_CALORIES_EXPENDED)
-//                            getDataFromDataReadResponse(caloriesDataSet!!)
-//                            val distanceDataSet = bucket.getDataSet(DataType.TYPE_DISTANCE_DELTA)
-//                            getDataFromDataReadResponse(distanceDataSet!!)
-                        }
-
-                    } else if (response.dataSets != null && response.dataSets.isNotEmpty()) {
-                        Log.d("qqq", "else" + response.dataSets.size.toString())
-                        for (dataSet in response.dataSets){
-//                            getDataFromDataReadResponse(dataSet)
-                            Log.d("qqq", dataSet.dataPoints.size.toString())
-//                            dataSet.
-                        }
-
-                    }
-                }
-            }
-            .addOnFailureListener { e -> Log.i("zzz0", e.toString()) }
-
+        getBodyTemperature(startTime, endTime)
     }
 
 
     private fun getCaloriesAndDistance(startTime: Long, endTime: Long) {
         val readRequest: DataReadRequest = DataReadRequest.Builder()
-//            .aggregate(DataType.TYPE_STEP_COUNT_DELTA)
-//            .aggregate(DataType.AGGREGATE_STEP_COUNT_DELTA)
             .aggregate(DataType.TYPE_CALORIES_EXPENDED)
             .aggregate(DataType.AGGREGATE_CALORIES_EXPENDED)
             .aggregate(DataType.TYPE_DISTANCE_DELTA)
@@ -205,6 +177,7 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Any?>, OnFailureList
         Fitness.getHistoryClient(this@MainActivity, getGoogleAccount())
             .readData(readRequest)
             .addOnSuccessListener(this)
+            .addOnFailureListener(this)
     }
 
     private fun getDailySteps() {
@@ -218,85 +191,168 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Any?>, OnFailureList
                 fitnessDataResponseModel.steps = total
             }
             .addOnFailureListener { e -> Log.i("zzz0", e.toString()) }
+            .addOnFailureListener(this)
     }
 
-    override fun onSuccess(o: Any?) {
-        if (o is DataSet) {
-            if (o != null) {
-                getDataFromDataSet(o)
-            }
-        } else if (o is DataReadResponse) {
-            fitnessDataResponseModel.calories = 0f
-            fitnessDataResponseModel.distance = 0f
-            if (o.buckets != null && o.buckets.isNotEmpty()) {
-                for (bucket in o.buckets) {
-                    val caloriesDataSet = bucket.getDataSet(DataType.TYPE_CALORIES_EXPENDED)
-                    getDataFromDataReadResponse(caloriesDataSet!!)
-                    val distanceDataSet = bucket.getDataSet(DataType.TYPE_DISTANCE_DELTA)
-                    getDataFromDataReadResponse(distanceDataSet!!)
-                }
+    private fun getHeightWeightAndHeartRate(endTime: Long) {
+        val readRequestBody: DataReadRequest = DataReadRequest.Builder()
+            .read(DataType.TYPE_HEIGHT)
+            .read(DataType.TYPE_WEIGHT)
+            .read(DataType.TYPE_HEART_RATE_BPM)
+            .setTimeRange(1, endTime, TimeUnit.MILLISECONDS)
+            .setLimit(1)
+            .build()
 
-            } else if (o.dataSets != null && o.dataSets.isNotEmpty()) {
-                for (dataSet in o.dataSets){
-                    getDataFromDataReadResponse(dataSet)
-                }
 
-            }
-        }
+        Fitness.getHistoryClient(this@MainActivity, getGoogleAccount())
+            .readData(readRequestBody)
+            .addOnSuccessListener(this)
+            .addOnFailureListener(this)
 
     }
 
-    private fun getDataFromDataSet(dataSet: DataSet) {
-        val dataPoints = dataSet.dataPoints
-        for (dataPoint in dataPoints) {
-            Log.d("zzz1", " data manual : " + dataPoint.originalDataSource.streamName)
-            for (field in dataPoint.dataType.fields) {
-                Log.d("zzz1", "field $field")
-                val value = dataPoint.getValue(field).toString().toFloat()
-                Log.d("zzz1", " data1 : $value")
-                when (field.name) {
-                    Field.FIELD_STEPS.name -> {
-                        fitnessDataResponseModel.steps = value.toInt()
-                    }
-                    Field.FIELD_CALORIES.name -> {
-                        fitnessDataResponseModel.calories =
-                            DecimalFormat("#.##").format(value.toDouble()).toFloat()
-                    }
-                    Field.FIELD_DISTANCE.name -> {
-                        fitnessDataResponseModel.distance =
-                            DecimalFormat("#.##").format(value.toDouble()).toFloat()
+    private fun getBloodPressure(startTime: Long, endTime: Long) {
+        val readRequest: DataReadRequest = DataReadRequest.Builder()
+            .aggregate(
+                HealthDataTypes.TYPE_BLOOD_PRESSURE,
+                HealthDataTypes.AGGREGATE_BLOOD_PRESSURE_SUMMARY
+            )
+            .bucketByTime(1, TimeUnit.DAYS)
+            .enableServerQueries()
+            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+            .build()
+
+        Fitness.getHistoryClient(this@MainActivity, getGoogleAccount())
+            .readData(readRequest)
+            .addOnSuccessListener(this)
+            .addOnFailureListener(this)
+    }
+
+    private fun getBodyTemperature(startTime: Long, endTime: Long) {
+        val readRequest: DataReadRequest = DataReadRequest.Builder()
+            .aggregate(
+                HealthDataTypes.TYPE_BODY_TEMPERATURE,
+                HealthDataTypes.AGGREGATE_BODY_TEMPERATURE_SUMMARY
+            )
+            .bucketByTime(1, TimeUnit.DAYS)
+            .enableServerQueries()
+            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+            .build()
+
+        Fitness.getHistoryClient(this@MainActivity, getGoogleAccount())
+            .readData(readRequest)
+            .addOnSuccessListener(this)
+//            .addOnSuccessListener {
+//                for (dataSet in it.buckets.flatMap { it.dataSets }) {
+//                    dumpDataSet(dataSet)
+//                }
+//            }
+            .addOnFailureListener(this)
+    }
+
+    private fun dumpDataSet(dataSet: DataSet) {
+        for (dp in dataSet.dataPoints) {
+            for (field in dp.dataType.fields) {
+                when(field){
+                    Field.FIELD_AVERAGE -> {
+                        fitnessDataResponseModel.bodyTemperature =
+                            DecimalFormat("#.##").format(dp.getValue(Field.FIELD_AVERAGE).asFloat()).toFloat()
                     }
                 }
             }
         }
-        Log.d("zzz fitness data1", fitnessDataResponseModel.toString())
-//        activityMainBinding.setFitnessData(fitnessDataResponseModel)
+    }
+
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun writeBodyTemperature() {
+        val endTime = LocalDateTime.now().atZone(ZoneId.systemDefault())
+        val startTime = endTime.minusHours(1)
+        val dataSource = DataSource.Builder()
+            .setAppPackageName(this)
+            .setDataType(HealthDataTypes.TYPE_BODY_TEMPERATURE)
+            .setStreamName("body temperature")
+            .setType(DataSource.TYPE_RAW)
+            .build()
+
+        val bodyTemp = 36.5f
+        val dataPoint = DataPoint.builder(dataSource)
+            .setField(HealthFields.FIELD_BODY_TEMPERATURE, bodyTemp)
+            .setTimeInterval(startTime.toEpochSecond(), endTime.toEpochSecond(), TimeUnit.SECONDS)
+            .build()
+
+        val dataSet = DataSet.builder(dataSource)
+            .add(dataPoint)
+            .build()
+
+        Fitness.getHistoryClient(this@MainActivity, getGoogleAccount())
+            .insertData(dataSet)
+            .addOnSuccessListener {
+                Log.i("zzz", "DataSet added successfully!")
+            }
+            .addOnFailureListener { e ->
+                Log.w("zzz", "There was an error adding the DataSet", e)
+            }
     }
 
     private fun getDataFromDataReadResponse(dataSet: DataSet) {
         val dataPoints = dataSet.dataPoints
         for (dataPoint in dataPoints) {
             for (field in dataPoint.dataType.fields) {
-                Log.d("zzz field", field.name)
-                val value = dataPoint.getValue(field).toString().toFloat()
+                Log.d("zzz field", "${field.name} - value: ${dataPoint.getValue(field)}")
+
+                var value: Number = 0
+
+                if (Pattern.matches(".*\\d.*", dataPoint.getValue(field).toString())){
+                    value = dataPoint.getValue(field).toString().toFloat()
+                }
+
+
                 when (field.name) {
                     Field.FIELD_STEPS.name -> {
                         fitnessDataResponseModel.steps = value.toInt()
                     }
                     Field.FIELD_CALORIES.name -> {
-                        fitnessDataResponseModel.calories = DecimalFormat("#.##").format(value).toFloat()
+                        fitnessDataResponseModel.calories =
+                            DecimalFormat("#.##").format(value).toFloat()
                     }
                     Field.FIELD_DISTANCE.name -> {
-                        fitnessDataResponseModel.distance = DecimalFormat("#.##").format(value).toFloat()
+                        fitnessDataResponseModel.distance =
+                            DecimalFormat("#.##").format(value).toFloat()
                     }
-
                     Field.FIELD_HEIGHT.name -> {
-                        Log.d("zzz height", value.toString())
-                        fitnessDataResponseModel.height = DecimalFormat("#.##").format(value).toFloat()
+                        fitnessDataResponseModel.height =
+                            DecimalFormat("#.##").format(value).toFloat()
                     }
                     Field.FIELD_WEIGHT.name -> {
-                        Log.d("zzz weight", value.toString())
-                        fitnessDataResponseModel.weight = DecimalFormat("#.##").format(value).toFloat()
+                        fitnessDataResponseModel.weight =
+                            DecimalFormat("#.##").format(value).toFloat()
+                    }
+                    Field.FIELD_BPM.name -> {
+                        fitnessDataResponseModel.heartRate = value.toInt()
+                    }
+                    HealthFields.FIELD_BLOOD_PRESSURE_SYSTOLIC_AVERAGE.name -> {
+                        fitnessDataResponseModel.bloodPressureSystolicAverage = value.toInt()
+                    }
+                    HealthFields.FIELD_BLOOD_PRESSURE_SYSTOLIC_MAX.name -> {
+                        fitnessDataResponseModel.bloodPressureSystolicMax = value.toInt()
+                    }
+                    HealthFields.FIELD_BLOOD_PRESSURE_SYSTOLIC_MIN.name -> {
+                        fitnessDataResponseModel.bloodPressureSystolicMin = value.toInt()
+                    }
+                    HealthFields.FIELD_BLOOD_PRESSURE_DIASTOLIC_AVERAGE.name -> {
+                        fitnessDataResponseModel.bloodPressureDiastolicAverage = value.toInt()
+                    }
+                    HealthFields.FIELD_BLOOD_PRESSURE_DIASTOLIC_MAX.name -> {
+                        fitnessDataResponseModel.bloodPressureDiastolicMax = value.toInt()
+                    }
+                    HealthFields.FIELD_BLOOD_PRESSURE_DIASTOLIC_MIN.name -> {
+                        fitnessDataResponseModel.bloodPressureDiastolicMin = value.toInt()
+                    }
+                    Field.FIELD_AVERAGE.name -> {
+                        fitnessDataResponseModel.bodyTemperature =
+                            DecimalFormat("#.##").format(value).toFloat()
                     }
                 }
             }
@@ -305,8 +361,36 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Any?>, OnFailureList
 
     }
 
+    override fun onSuccess(o: Any?) {
+        if (o is DataSet) {
+            if (o != null) {
+                getDataFromDataReadResponse(o)
+            }
+        } else if (o is DataReadResponse) {
+            if (o.buckets != null && o.buckets.isNotEmpty()) {
+                for (bucket in o.buckets) {
+                    val caloriesDataSet = bucket.getDataSet(DataType.TYPE_CALORIES_EXPENDED)
+                    caloriesDataSet?.let { getDataFromDataReadResponse(it) }
+                    val distanceDataSet = bucket.getDataSet(DataType.TYPE_DISTANCE_DELTA)
+                    distanceDataSet?.let { getDataFromDataReadResponse(it) }
+                    val bloodPressure = bucket.getDataSet(HealthDataTypes.AGGREGATE_BLOOD_PRESSURE_SUMMARY)
+                    bloodPressure?.let { getDataFromDataReadResponse(it) }
+                    val bodyTemperature = bucket.getDataSet(HealthDataTypes.AGGREGATE_BODY_TEMPERATURE_SUMMARY)
+                    bodyTemperature?.let { getDataFromDataReadResponse(it) }
+                }
+
+            } else if (o.dataSets != null && o.dataSets.isNotEmpty()) {
+                for (dataSet in o.dataSets) {
+                    getDataFromDataReadResponse(dataSet)
+                }
+
+            }
+        }
+
+    }
+
     override fun onFailure(e: Exception) {
-        Log.d("zzz", e.toString())
+        Log.d("eee", e.toString())
     }
 
 }
