@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="signUpListener"
+            type="com.example.myapplication.ui.screen.signup.SignUpFragment" />
+        <variable
+            name="viewModel"
+            type="com.example.myapplication.ui.screen.signup.SignUpViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.screen.signup.SignUpFragment"
+        android:background="@color/white"
+        android:onClick="@{v -> signUpListener.viewParentClick()}">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:src="@drawable/ic_back"
+            android:background="@drawable/bg_corner_radius_btn_back"
+            app:layout_constraintStart_toStartOf="@id/tvWelcome"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.05"
+            android:onClick="@{v->signUpListener.ivBackClick()}" />
+
+        <com.example.myapplication.ui.base.TextViewNotoSansJpBold
+            android:id="@+id/tvWelcome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_23sdp"
+            android:text="@string/string_register"
+            android:textStyle="bold"
+            app:layout_constraintWidth_percent="0.8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0.25"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.15"/>
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_56sdp"
+            app:layout_constraintWidth_percent="0.9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvWelcome"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:inputType="textEmailAddress"
+            android:hint="@string/string_email_1"
+            android:text="@{viewModel.email}"/>
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_56sdp"
+            app:layout_constraintWidth_percent="0.9"
+            app:layout_constraintStart_toStartOf="@id/etEmail"
+            app:layout_constraintEnd_toEndOf="@id/etEmail"
+            app:layout_constraintTop_toBottomOf="@id/etEmail"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:hint="@string/string_password"
+            android:inputType="textPassword"
+            android:text="@{viewModel.password}"/>
+
+        <EditText
+            android:id="@+id/etRePassword"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_56sdp"
+            app:layout_constraintWidth_percent="0.9"
+            app:layout_constraintStart_toStartOf="@id/etEmail"
+            app:layout_constraintEnd_toEndOf="@id/etEmail"
+            app:layout_constraintTop_toBottomOf="@id/etPassword"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:hint="@string/string_re_password"
+            android:inputType="textPassword"
+            android:text="@{viewModel.rePassword}"/>
+
+        <CheckBox
+            android:id="@+id/cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            app:layout_constraintTop_toBottomOf="@id/etRePassword"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.03"
+            android:layout_marginTop="@dimen/_5sdp" />
+
+        <com.example.myapplication.ui.base.TextViewNotoSansJpMedium
+            android:id="@+id/tvPolicy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="@string/string_policy"
+            android:text="@string/string_policy"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="@color/color_btn_navy"
+            app:layout_constraintStart_toEndOf="@id/cb"
+            app:layout_constraintEnd_toEndOf="@id/etEmail"
+            app:layout_constraintTop_toTopOf="@id/cb"
+            app:layout_constraintBottom_toBottomOf="@id/cb"
+            android:layout_marginTop="@dimen/_5sdp"
+            app:layout_constraintVertical_bias="0.28"/>
+
+        <com.example.myapplication.ui.base.TextViewNotoSansJpMedium
+            android:id="@+id/tvError"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="無効なエラーを記録する"
+            android:textSize="@dimen/_15sdp"
+            android:textColor="@color/color_btn_red_light"
+            app:layout_constraintStart_toStartOf="@id/etEmail"
+            app:layout_constraintEnd_toEndOf="@id/etEmail"
+            app:layout_constraintTop_toBottomOf="@id/cb"
+            android:layout_marginTop="@dimen/_5sdp"/>
+
+        <com.example.myapplication.ui.base.ButtonNotoSansJpMedium
+            android:id="@+id/btnSignUp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_56sdp"
+            android:text="@string/string_sign_up"
+            android:background="@drawable/bg_corner_radius_btn_navy"
+            app:layout_constraintStart_toStartOf="@id/etEmail"
+            app:layout_constraintEnd_toEndOf="@id/etPassword"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.9"
+            android:textSize="@dimen/_14sdp"
+            android:onClick="@{v-> signUpListener.btnSignUpClick()}"/>
+
+        <com.example.myapplication.ui.base.TextViewNotoSansJpMedium
+            android:id="@+id/tvSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="既にアカウントをお持ちですか？ ここでログイン"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="@color/color_btn_navy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/_20sdp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

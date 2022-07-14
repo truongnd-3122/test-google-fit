@@ -1,3 +1,52 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <!--error message-->
+
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="connect_timeout">Connect Timeout</string>
+    <string name="server_maintain_message">Server maintain, please try again later</string>
+    <string name="unknown_error">Something error, please try again later</string>
+
+    <!--main screen-->
+    <string name="main_tab_popular">POPULAR</string>
+    <string name="main_tab_top_rated">TOP RATED</string>
+    <string name="main_tab_favorite">FAVORITE</string>
+    <string name="main_tab_profile">PROFILE</string>
+    <string name="main_tab_tv">TV</string>
+
+    <!--login-->
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_button_login">Login</string>
+
+    <string name="ok">OK</string>
+    <string name="summary">Summary</string>
+
+    <string name="force_update_title">更新情報</string>
+    <string name="force_update_app">Please update app</string>
+    <string name="force_update_confirm">更新</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="string_welcome">ようこそ！</string>
+    <string name="string_email">メールアドレス</string>
+    <string name="string_password">パスワード</string>
+    <string name="string_sign_in">ログイン</string>
+    <string name="string_register">アカウントを新規登録</string>
+    <string name="string_email_1">Eメール</string>
+    <string name="string_re_password">パスワードの確認</string>
+    <string name="string_sign_up">登録</string>
+    <string name="string_send_data">バイタルデータを送信する</string>
+    <string name="string_sign_out">ログアウト</string>
+    <string name="string_navigate_sign_up">アカウントをお持ちではありませんか？ 今すぐ登録</string>
+    <string name="string_navigate_sign_in">既にアカウントをお持ちですか？ ここでログイン</string>
+    <string name="string_welcome_email">こんにちは、</string>
+    <string name="string_policy">プライバシーポリシー・利用規約へ同意する</string>
+    <string name="string_empty_email">メールアドレスを入力してください。</string>
+    <string name="string_empty_password">パスワードを入力してください。</string>
+    <string name="string_empty_repassword">確認用パスワードを入力してください。</string>
+    <string name="string_invalid_email">メールアドレスは不正な値です。</string>
+    <string name="string_not_match_password">パスワード（確認用）とパスワードの入力が一致しません。</string>
+    <string name="string_password_short">パスワードは8文字以上で入力してください。</string>
+    <string name="string_password_long">パスワードは128文字以内で入力してください。</string>
+
+
 </resources>
