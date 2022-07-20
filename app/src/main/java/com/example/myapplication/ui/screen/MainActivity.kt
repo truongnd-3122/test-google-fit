@@ -1,8 +1,6 @@
 package com.example.myapplication.ui.screen
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityMainBinding
@@ -21,11 +19,13 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
         addFragment(SignInFragment.newInstance(), R.id.container, true)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("sss", resultCode.toString())
-        for (fragment in supportFragmentManager.fragments) {
-            fragment.onActivityResult(requestCode, resultCode, data)
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        Log.d("sss", resultCode.toString())
+//        for (fragment in supportFragmentManager.fragments) {
+//            fragment.onActivityResult(requestCode, resultCode, data)
+//        }
+//    }
+
+
 
 }

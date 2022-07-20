@@ -7,9 +7,6 @@
         <variable
         name="signInListener"
         type="com.example.myapplication.ui.screen.signin.SignInFragment" />
-        <variable
-            name="viewModel"
-            type="com.example.myapplication.ui.screen.signin.SignInViewModel" />
     </data>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,7 +33,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.20" />
 
-            <EditText
+            <com.example.myapplication.ui.base.BaseEditText
                 android:id="@+id/etEmail"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_56sdp"
@@ -46,10 +43,9 @@
                 app:layout_constraintTop_toBottomOf="@id/tvWelcome"
                 android:layout_marginTop="@dimen/_50sdp"
                 android:inputType="textEmailAddress"
-                android:text="@={viewModel.email}"
                 android:hint="@string/string_email"/>
 
-            <EditText
+            <com.example.myapplication.ui.base.BaseEditText
                 android:id="@+id/etPassword"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_56sdp"
@@ -59,7 +55,6 @@
                 app:layout_constraintTop_toBottomOf="@id/etEmail"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:hint="@string/string_password"
-                android:text="@={viewModel.password}"
                 android:inputType="textPassword"/>
 
             <com.example.myapplication.ui.base.TextViewNotoSansJpMedium

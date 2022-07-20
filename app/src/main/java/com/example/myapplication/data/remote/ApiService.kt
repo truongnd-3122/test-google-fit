@@ -1,8 +1,6 @@
 package com.example.myapplication.data.remote
 
-import com.example.myapplication.data.model.Movie
-import com.example.myapplication.data.model.UserInfoSignIn
-import com.example.myapplication.data.model.UserInfoSignUp
+import com.example.myapplication.data.model.*
 import com.example.myapplication.data.remote.response.GetMovieListResponse
 import com.example.myapplication.data.remote.response.Response
 import com.example.myapplication.data.remote.response.DataResponse
@@ -27,5 +25,8 @@ interface ApiService {
 
     @DELETE("api/v1/consumers/sign_out")
     suspend fun signOut(): retrofit2.Response<Unit>
+
+    @POST("api/v1/android/health/vital")
+    suspend fun sendDataToServer(@Body dataToServer: DataToServer): Response<DataFromServer>
 
 }

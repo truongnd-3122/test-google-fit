@@ -4,26 +4,18 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.example.myapplication.R
-import com.example.myapplication.data.model.UserInfoSignUp
 import com.example.myapplication.databinding.FragmentSignUpBinding
 import com.example.myapplication.ui.base.BaseFragment
 import com.example.myapplication.ui.screen.main.MainFragment
 import com.example.myapplication.utils.hideKeyboard
-import com.example.myapplication.utils.validateEmail
-import com.example.myapplication.utils.validatePassword
-import com.example.myapplication.utils.validateRePassword
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_sign_up.*
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SignUpFragment : BaseFragment<FragmentSignUpBinding, SignUpViewModel>() {
@@ -57,9 +49,9 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding, SignUpViewModel>() {
     fun viewParentClick() {
         with(viewBinding) {
             viewParent.hideKeyboard()
-//            etEmail.clearFocus(true)
-//            etPassword.clearFocus(true)
-//            etRePassword.clearFocus(true)
+            etEmail.clearFocus(true)
+            etPassword.clearFocus(true)
+            etRePassword.clearFocus(true)
         }
     }
 
@@ -107,26 +99,30 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding, SignUpViewModel>() {
         val policy = SpannableString(getString(R.string.string_policy))
         policy.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.color_hint_edit_text)), 0, 15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        val click1 = object :ClickableSpan(){
+        val privacyPolicyClick = object :ClickableSpan(){
             override fun onClick(p0: View) {
-                Toast.makeText(requireContext(), "123", Toast.LENGTH_SHORT).show()
+                val bsdf = AppBottomSheetDialogFragment()
+                bsdf.isPolicy(true)
+                bsdf.show(parentFragmentManager, bsdf.tag)
             }
             override fun updateDrawState(ds: TextPaint) {
                 ds.isUnderlineText = true
             }
         }
 
-        val click2 = object :ClickableSpan(){
+        val termOfUseClick = object :ClickableSpan(){
             override fun onClick(p0: View) {
-                Toast.makeText(requireContext(), "456", Toast.LENGTH_SHORT).show()
+                val bsdf = AppBottomSheetDialogFragment()
+                bsdf.isPolicy(false)
+                bsdf.show(parentFragmentManager, bsdf.tag)
             }
             override fun updateDrawState(ds: TextPaint) {
                 ds.isUnderlineText = true
             }
         }
 
-        policy.setSpan(click1, 0, 10, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        policy.setSpan(click2, 11, 15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        policy.setSpan(privacyPolicyClick, 0, 10, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        policy.setSpan(termOfUseClick, 11, 15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         with(viewBinding){
             tvSignIn.text = text

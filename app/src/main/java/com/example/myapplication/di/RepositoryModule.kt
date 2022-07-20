@@ -5,11 +5,13 @@ import com.example.myapplication.data.repository.MainRepository
 import com.example.myapplication.data.repository.MovieRepository
 import com.example.myapplication.data.repository.SignInRepository
 import com.example.myapplication.data.repository.SignUpRepository
+import com.google.android.gms.fitness.HistoryClient
+import com.google.android.gms.fitness.RecordingClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import jp.co.sgaas.data.repository.impl.MainRepositoryImpl
+import com.example.myapplication.data.repository.impl.MainRepositoryImpl
 import jp.co.sgaas.data.repository.impl.MovieRepositoryImpl
 import jp.co.sgaas.data.repository.impl.SignInRepositoryImpl
 import jp.co.sgaas.data.repository.impl.SignUpRepositoryImpl
@@ -34,6 +36,9 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideSignOutRepository(apiService: ApiService): MainRepository = MainRepositoryImpl(apiService)
+    fun provideMainRepository(apiService: ApiService,
+                              historyClient: HistoryClient,
+                              recordingClient: RecordingClient
+    ): MainRepository = MainRepositoryImpl(apiService, historyClient, recordingClient)
 
 }

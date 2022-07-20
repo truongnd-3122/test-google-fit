@@ -2,7 +2,6 @@ package com.example.myapplication.ui.screen.signin
 
 import android.content.res.Resources
 import android.text.TextUtils
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.R
@@ -25,15 +24,12 @@ class SignInViewModel @Inject constructor(
     private val resources: Resources
 ) : BaseViewModel() {
 
-    val email = MutableLiveData<String>()
-    val password = MutableLiveData<String>()
     val errorsLiveData = MutableLiveData<String>()
     val isLogin = MutableLiveData<Boolean>()
     val isTokenUser = MutableLiveData<Boolean>(false)
 
     fun isTokenExists() {
         isTokenUser.value = !TextUtils.isEmpty(appPrefs.getAccessToken().toString())
-        Log.d("zzz", appPrefs.getAccessToken().toString())
     }
 
     fun signIn(userInfoSignIn: UserInfoSignIn) {
@@ -52,15 +48,13 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun validateInput(){
-        val e = email.value.toString()
-        val p = password.value.toString()
+    fun validateInput(e: String, p: String){
 
-        if (TextUtils.isEmpty(email.value)){
+        if (TextUtils.isEmpty(e)){
             errorsLiveData.value = resources.getString(R.string.string_empty_email)
             return
         }
-        if (TextUtils.isEmpty(password.value)){
+        if (TextUtils.isEmpty(p)){
             errorsLiveData.value = resources.getString(R.string.string_empty_password)
             return
         }

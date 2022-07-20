@@ -62,13 +62,15 @@ class SignInFragment : BaseFragment<FragmentSignInBinding, SignInViewModel>() {
     fun viewParentClick() {
         with(viewBinding) {
             viewParent.hideKeyboard()
-//            etEmail.clearFocus(true)
-//            etPassword.clearFocus(true)
+            etEmail.clearFocus(true)
+            etPassword.clearFocus(true)
         }
     }
 
     fun btnSignInClick() {
-        viewModel.validateInput()
+        val e = viewBinding.etEmail.text.toString()
+        val p = viewBinding.etPassword.text.toString()
+        viewModel.validateInput(e, p)
     }
 
     private fun setUpTextViewBottom(){
@@ -101,7 +103,6 @@ class SignInFragment : BaseFragment<FragmentSignInBinding, SignInViewModel>() {
         if (isLogin) {
             handleLoading(false)
             replaceFragment(MainFragment.newInstance(), R.id.container, false)
-//            Intent(requireActivity(), HomeActivity::class.java).also { startActivity(it) }
         }
     }
 

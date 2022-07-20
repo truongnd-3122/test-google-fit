@@ -22,8 +22,8 @@ class HeaderInterceptor @Inject constructor(val appPrefs: AppPrefs) : Intercepto
 
     companion object {
         private const val API_REFRESH_TOKEN = "${BuildConfig.BASE_URL}${ApiPath.PATH_REFRESH_TOKEN}"
-        private const val AUTH = "Authorization"
-        private const val VALUE_AUTH = "Basic ZGV2LXMtZ2FhczpBYUAxMjM0NTY="
+        const val AUTH = "Authorization"
+        const val VALUE_AUTH = "Basic ZGV2LXMtZ2FhczpBYUAxMjM0NTY="
         private const val CONTENT_TYPE = "Content-Type"
         private const val VALUE_CONTENT_TYPE = "application/x-www-form-urlencoded"
         private const val X_REFRESH_TOKEN = "X-Refresh-Token"

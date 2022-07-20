@@ -13,4 +13,6 @@ object Constants {
     const val REFRESH_TOKEN_EXPIRED = 401
     const val TOKEN_EXPIRED = "The refresh token expired"
     const val DATABASE_NAME = "DATABASE_NAME"
+    const val PRIVACY_POLICIES_URL = "https://dev-s-gass.sun-asterisk.vn/privacy_policies"
+    const val TERM_OF_USE_URL = "https://dev-s-gass.sun-asterisk.vn/terms_of_services"
 }

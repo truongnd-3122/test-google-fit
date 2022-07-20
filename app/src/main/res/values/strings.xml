@@ -47,6 +47,12 @@
     <string name="string_not_match_password">パスワード（確認用）とパスワードの入力が一致しません。</string>
     <string name="string_password_short">パスワードは8文字以上で入力してください。</string>
     <string name="string_password_long">パスワードは128文字以内で入力してください。</string>
+    <string name="string_completion">完了</string>
+
+    <string name="permission_denied_explanation">Deny.</string>
+    <string name="permission_rationale">Error Google Fit API</string>
+    <string name="settings">Settings</string>
+    <string name="qauth_error">Auth Error</string>
 
 
 </resources>
